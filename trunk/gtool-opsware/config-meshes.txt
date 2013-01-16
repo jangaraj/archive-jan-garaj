@@ -1,0 +1,11 @@
+; Config file for meshes
+; <MESH_NAME> is used as input for -m parameter
+; template of line:     
+; <OCC>;<USERNAME>;<PASSWORD>;<MESH_NAME>
+occ.example.com;login;password;mesh1
+occ2.example.com;login2;password2;mesh2
+; occ3.example.com;login3;password3;mesh3
+
+
+
+
