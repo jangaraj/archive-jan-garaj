@@ -392,7 +392,7 @@ static void	process_httptest(DC_HOST *host, zbx_httptest_t *httptest)
      
     // Custom headers handling
     // e.g. httpstep.headers = "Content-Type: text/xml"
-    // SQL: ALTER TABLE `httptest` ADD COLUMN `headers`  varchar(255) NOT NULL AFTER `retries`;
+    // SQL: ALTER TABLE `httpstep` ADD COLUMN `headers`  varchar(255) NOT NULL AFTER `variables`;
     if ('\0' != *httpstep.headers)
     {
       struct curl_slist *headers = NULL;
