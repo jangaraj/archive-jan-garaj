@@ -403,6 +403,7 @@ static void	process_httptest(DC_HOST *host, zbx_httptest_t *httptest)
   			err_str = zbx_strdup(err_str, curl_easy_strerror(err));
   			goto httpstep_error;
   		}
+      zabbix_log(LOG_LEVEL_DEBUG, "%s() use headers \"%s\"", __function_name, httpstep.headers);
     }
     
 
