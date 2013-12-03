@@ -311,7 +311,7 @@ static void	process_httptest(DC_HOST *host, zbx_httptest_t *httptest)
 	lastfailedstep = 0;
 
 	result = DBselect(
-			"select httpstepid,no,name,url,timeout,posts,required,status_codes,variables"
+			"select httpstepid,no,name,url,timeout,posts,required,status_codes,variables,headers"
 			" from httpstep"
 			" where httptestid=" ZBX_FS_UI64
 			" order by no",
@@ -366,6 +366,7 @@ static void	process_httptest(DC_HOST *host, zbx_httptest_t *httptest)
 				&httpstep.status_codes, MACRO_TYPE_COMMON, NULL, 0);
 
 		httpstep.variables = row[8];
+    httpstep.headers = row[9];
 
 		memset(&stat, 0, sizeof(stat));
 
@@ -388,6 +389,22 @@ static void	process_httptest(DC_HOST *host, zbx_httptest_t *httptest)
 			err_str = zbx_strdup(err_str, curl_easy_strerror(err));
 			goto httpstep_error;
 		}
+     
+    // Custom headers handling
+    // e.g. httpstep.headers = "Content-Type: text/xml"
+    // SQL: ALTER TABLE `httptest` ADD COLUMN `headers`  varchar(255) NOT NULL AFTER `retries`;
+    if ('\0' != *httpstep.headers)
+    {
+      struct curl_slist *headers = NULL;
+      // TODO - add support/parsing for multiple headers e.g. "Content-Type: text/xml; Charset: UTF-8"
+      headers = curl_slist_append(headers, httpstep.headers);
+  		if (CURLE_OK != (err = curl_easy_setopt(easyhandle, CURLOPT_HTTPHEADER, headers)))
+  		{
+  			err_str = zbx_strdup(err_str, curl_easy_strerror(err));
+  			goto httpstep_error;
+  		}
+    }
+    
 
 		if (HTTPTEST_AUTH_NONE != httptest->httptest.authentication)
 		{
