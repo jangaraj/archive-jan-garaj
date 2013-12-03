@@ -400,6 +400,7 @@ typedef struct
 	int		no;
 	int		timeout;
 	char		*variables;
+  char		*headers;
 }
 DB_HTTPSTEP;
 
